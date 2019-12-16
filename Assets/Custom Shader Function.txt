@@ -1,0 +1,24 @@
+float4 sample = CSColor;
+uint3 sampleCoord = uint3(0,0,0);
+Albedo = sample;
+Normal = float3(0.0f,0.0f,1.0f);
+Emission = float3(0,0,0);
+MetSmoothOcc = float3(0,0,1);
+[loop]
+for (int i = 0; i < Dimensions.y; i++)
+{
+sampleCoord = uint3(0,i,0);
+sample = Colormap.Load(sampleCoord);
+if ((sample.x == CSColor.x) && (sample.y == CSColor.y) && (sample.z == CSColor.z))
+{
+sampleCoord = uint3(1,i,0);
+Albedo = Colormap.Load(sampleCoord);
+Albedo.a = Albedo.a * CSColor.a;
+sampleCoord = uint3(2,i,0);
+Normal = Colormap.Load(sampleCoord).xyz;
+sampleCoord = uint3(3,i,0);
+Emission = Colormap.Load(sampleCoord);
+sampleCoord = uint3(4,i,0);
+MetSmoothOcc = Colormap.Load(sampleCoord);
+}
+}
